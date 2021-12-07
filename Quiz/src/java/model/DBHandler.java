@@ -19,8 +19,12 @@ public class DBHandler {
        private PreparedStatement getUserCount;
        int userCount;
        User[] users;
+       Question[] questions;
        
-
+       
+       public DBHandler(){
+           connToDB();
+       }
          
        public static void connToDB(){
           try{
@@ -35,7 +39,7 @@ public class DBHandler {
        
     public User[] findUsers() {
         try {
-            connToDB();
+          //  connToDB();
             getUserCount = connection.prepareStatement("SELECT COUNT(*) FROM users");
             ResultSet countResult = getUserCount.executeQuery();
             countResult.next();
@@ -62,17 +66,12 @@ public class DBHandler {
         return users;
     }
     
-       public User[] getUsers() {
-          User[] users = new User[2];
-          users[0] = new User();
-          users[0].setUsername("ada@kthse");
-          users[0].setPassword("12345");
-          users[1] = new User();
-          users[1].setUsername("beda@kth.se");
-          users[1].setPassword("qwerty");
-          return users;
-    
+    public Question[] getQuestions(){
+    //    connToDB();
+        
+        
+        return questions;
     }
-       
+    
 
 }

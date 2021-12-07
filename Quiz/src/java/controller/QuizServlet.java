@@ -3,29 +3,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package controller;
-package model;
 
 import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletContext;
 import java.io.IOException;
 import java.io.PrintWriter;
-
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import model.DBHandler;
-import model.User;
 
 /**
  *
  * @author sarab
  */
-public class UserServlet extends HttpServlet {
-    String password="notworking";
-    User[] users;
+public class QuizServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -44,10 +36,10 @@ public class UserServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UserServlet</title>");            
+            out.println("<title>Servlet QuizServlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UserServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet QuizServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -65,10 +57,7 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-                RequestDispatcher rd = request.getRequestDispatcher("/index.html");
-                rd.forward(request, response);
-
-      //  processRequest(request, response);
+        processRequest(request, response);
     }
 
     /**
@@ -82,48 +71,15 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-      
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        HttpSession session = request.getSession(true);
-        User u;
-        if (session.isNew()) {
-            u = new User();
-            u.setUsername(request.getParameter("username"));
-            u.setPassword(request.getParameter("password"));
-            //session.setAttribute("user", u);
-        } else {
-            // retrieve the already existring user
-            u = (User) session.getAttribute("user");
+        if ("SelectQuiz1".equals(request.getParameter("action"))) {
+                           RequestDispatcher rd = request.getRequestDispatcher("/temp.html");
+                           rd.forward(request, response);
+        } 
+        else if ("SelectQuiz2".equals(request.getParameter("action"))) {
+                           RequestDispatcher rd = request.getRequestDispatcher("/temp2.html");
+                           rd.forward(request, response);
         }
-        ServletContext application = request.getServletContext();
-        DBHandler dbh = (DBHandler) application.getAttribute("dbh");
-        if (dbh == null) {
-            dbh = new DBHandler();
-        }
-        //Get username and password from the POST
-        users = dbh.findUsers();
-        session.setAttribute("password",password);
-        //       application.setAttribute("users", users);
-        if ("login".equals(request.getParameter("action"))) {
-            // check if user is authorized with the "dbh" object
-            for(User temp : users) {
-                //Checks that the username exists in the database
-                if (temp.getUsername().equals(request.getParameter("username"))){
-                    password = request.getParameter("password");
-                    if (temp.getPassword().equals(password)){
-                            RequestDispatcher rd = request.getRequestDispatcher("/mainMenu.jsp");
-                            rd.forward(request, response);
-                    } else {
-                        RequestDispatcher rd = request.getRequestDispatcher("/indexcopy.html");
-                        rd.forward(request, response);
-                    }
-                } 
-            }
-            RequestDispatcher rd = request.getRequestDispatcher("/indexcopy.html"); //Ska gå in på quizzen ist
-            rd.forward(request, response);
-        }
-        // processRequest(request, response);
+        processRequest(request, response);
     }
 
     /**
