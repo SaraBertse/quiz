@@ -4,14 +4,21 @@
  */
 package controller;
 
-import jakarta.servlet.RequestDispatcher;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import model.DBHandler;
+import model.Question;
+import model.Result;
 
 /**
  *
@@ -71,14 +78,72 @@ public class QuizServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        HttpSession session = request.getSession(true);
+        
+        ServletContext application = request.getServletContext();
+        DBHandler dbh = (DBHandler) application.getAttribute("dbh");
+        if (dbh == null) {
+            dbh = new DBHandler();
+        }
+        List<Question> questions = dbh.getQuestions(1);
+        session.setAttribute("questions", questions);
+        
         if ("SelectQuiz1".equals(request.getParameter("action"))) {
-                           RequestDispatcher rd = request.getRequestDispatcher("/temp.html");
-                           rd.forward(request, response);
+            RequestDispatcher rd = request.getRequestDispatcher("/quiz1.jsp");
+            rd.forward(request, response);
         } 
         else if ("SelectQuiz2".equals(request.getParameter("action"))) {
                            RequestDispatcher rd = request.getRequestDispatcher("/temp2.html");
                            rd.forward(request, response);
         }
+        else if ("submitQuiz".equals(request.getParameter("action"))){
+            /*int[] q1answers = new int[3];
+            int[] q2answers = new int[3];
+            int[] q3answers = new int[3];*/
+            
+            int[][] qAnswers = new int[3][3];
+            
+            for(int i = 1; i < 4; i++){
+                for(int j = 1; j < 4; j++){
+                    if(!(request.getParameter("q" + i + "b" + j) == null)){
+                        qAnswers[i-1][j-1] = 1;
+                    }
+                    //else{
+                    //    qAnswers[i-1][j-1] = 1;
+                    //}
+                }
+            }
+            
+            
+            int points = 0;
+            for(int i = 0; i < 3; i++){
+                boolean solvedQuestion = true;
+                for(int j = 0; j < 3; j++){
+                    if(!(Integer.parseInt(questions.get(i).getCorrect()[j]) == qAnswers[i][j])){
+                        solvedQuestion = false;
+                    }
+                }
+                if(solvedQuestion) { points++; }
+                
+            }
+            
+            RequestDispatcher rd = request.getRequestDispatcher("/quizResult.jsp");
+            ArrayList<Result> pointsHistory; // if default num shows up something is wrong
+            pointsHistory = dbh.getResults(1, "ada@kth.se");
+            session.setAttribute("pointsHistory", pointsHistory);
+            
+            session.setAttribute("points", points);
+            rd.forward(request, response);
+            
+        }
+        // activates when pressing "Back" in quizResult
+        else if ("toMain".equals(request.getParameter("action"))) {
+            RequestDispatcher rd = request.getRequestDispatcher("/mainMenu.jsp");
+            rd.forward(request, response);
+        }
+        
         processRequest(request, response);
     }
 
@@ -91,5 +156,7 @@ public class QuizServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+    
+    //public calcPoints()
 
 }

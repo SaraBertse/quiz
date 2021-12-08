@@ -3,20 +3,23 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package controller;
-package model;
+//package model;
 
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletContext;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import model.DBHandler;
+import model.Result;
 import model.User;
 
 /**
@@ -111,13 +114,19 @@ public class UserServlet extends HttpServlet {
                 //Checks that the username exists in the database
                 if (temp.getUsername().equals(request.getParameter("username"))){
                     password = request.getParameter("password");
+                    RequestDispatcher rd;
                     if (temp.getPassword().equals(password)){
-                            RequestDispatcher rd = request.getRequestDispatcher("/mainMenu.jsp");
-                            rd.forward(request, response);
+                            rd = request.getRequestDispatcher("/mainMenu.jsp");
+                            //rd.forward(request, response);
                     } else {
-                        RequestDispatcher rd = request.getRequestDispatcher("/indexcopy.html");
-                        rd.forward(request, response);
+                        rd = request.getRequestDispatcher("/indexcopy.html");
+                        //rd.forward(request, response);
                     }
+                    
+                    List<Result> pointsHistory; // if default num shows up something is wrong
+                    pointsHistory = dbh.getResults(1, "ada@kth.se");
+                    session.setAttribute("pointsHistory", pointsHistory);
+                    rd.forward(request, response);
                 } 
             }
             RequestDispatcher rd = request.getRequestDispatcher("/indexcopy.html"); //Ska gå in på quizzen ist

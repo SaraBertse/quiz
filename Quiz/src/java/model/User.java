@@ -1,4 +1,3 @@
-
 package model;
 
 /**
@@ -26,4 +25,3 @@ public class User {
         return this.password;
     }
 }
-
