@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,7 +27,7 @@ import model.User;
 
 /**
  *
- * @author sarab
+ * @author Sara Bertse and Jacob Dwyer
  */
 public class UserServlet extends HttpServlet {
     String password="notworking";
@@ -70,8 +73,6 @@ public class UserServlet extends HttpServlet {
             throws ServletException, IOException {
                 RequestDispatcher rd = request.getRequestDispatcher("/index.html");
                 rd.forward(request, response);
-
-      //  processRequest(request, response);
     }
 
     /**
@@ -90,10 +91,12 @@ public class UserServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         HttpSession session = request.getSession(true);
         User u;
+        password = request.getParameter("password");
+        password = encodePassw(password); // encodes to MD5
         if (session.isNew()) {
             u = new User();
             u.setUsername(request.getParameter("username"));
-            u.setPassword(request.getParameter("password"));
+            u.setPassword(password);
             //session.setAttribute("user", u);
         } else {
             // retrieve the already existring user
@@ -106,6 +109,9 @@ public class UserServlet extends HttpServlet {
         }
         //Get username and password from the POST
         users = dbh.findUsers();
+        
+        //password = encodePassw(password); // encodes to MD5
+        
         session.setAttribute("password",password);
         //       application.setAttribute("users", users);
         if ("login".equals(request.getParameter("action"))) {
@@ -113,19 +119,23 @@ public class UserServlet extends HttpServlet {
             for(User temp : users) {
                 //Checks that the username exists in the database
                 if (temp.getUsername().equals(request.getParameter("username"))){
-                    password = request.getParameter("password");
+                    //password = request.getParameter("password");
                     RequestDispatcher rd;
                     if (temp.getPassword().equals(password)){
                             rd = request.getRequestDispatcher("/mainMenu.jsp");
+                            application.setAttribute("username", request.getParameter("username"));
                             //rd.forward(request, response);
                     } else {
                         rd = request.getRequestDispatcher("/indexcopy.html");
                         //rd.forward(request, response);
                     }
                     
-                    List<Result> pointsHistory; // if default num shows up something is wrong
-                    pointsHistory = dbh.getResults(1, "ada@kth.se");
-                    session.setAttribute("pointsHistory", pointsHistory);
+                    List<Result> quiz1History; // if default num shows up something is wrong
+                    List<Result> quiz2History;
+                    quiz1History = dbh.getResults(1, request.getParameter("username"));
+                    quiz2History = dbh.getResults(2, request.getParameter("username"));
+                    session.setAttribute("quiz1History", quiz1History);
+                    session.setAttribute("quiz2History", quiz2History);
                     rd.forward(request, response);
                 } 
             }
@@ -133,6 +143,32 @@ public class UserServlet extends HttpServlet {
             rd.forward(request, response);
         }
         // processRequest(request, response);
+    }
+    
+    public String encodePassw(String passw){
+        try {
+  
+            MessageDigest md = MessageDigest.getInstance("MD5");
+  
+            // digest() method is called to calculate message digest
+            //  of an input digest() return array of byte
+            byte[] messageDigest = md.digest(passw.getBytes());
+  
+            // Convert byte array into signum representation
+            BigInteger no = new BigInteger(1, messageDigest);
+  
+            // Convert message digest into hex value
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+        } 
+  
+        // For specifying wrong message digest algorithms
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

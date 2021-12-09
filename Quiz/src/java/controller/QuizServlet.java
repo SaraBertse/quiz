@@ -25,6 +25,8 @@ import model.Result;
  * @author sarab
  */
 public class QuizServlet extends HttpServlet {
+    int quizType = 0;
+    ArrayList<Question> questions;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -81,22 +83,28 @@ public class QuizServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         HttpSession session = request.getSession(true);
+        //int quizType = 0;
         
         ServletContext application = request.getServletContext();
         DBHandler dbh = (DBHandler) application.getAttribute("dbh");
         if (dbh == null) {
             dbh = new DBHandler();
         }
-        List<Question> questions = dbh.getQuestions(1);
-        session.setAttribute("questions", questions);
+        //List<Question> questions = new List<>();
         
         if ("SelectQuiz1".equals(request.getParameter("action"))) {
             RequestDispatcher rd = request.getRequestDispatcher("/quiz1.jsp");
+            quizType = 1;
+            questions = dbh.getQuestions(quizType);
+            session.setAttribute("questions", questions);
             rd.forward(request, response);
         } 
         else if ("SelectQuiz2".equals(request.getParameter("action"))) {
-                           RequestDispatcher rd = request.getRequestDispatcher("/temp2.html");
-                           rd.forward(request, response);
+            RequestDispatcher rd = request.getRequestDispatcher("/quiz2.jsp");
+            quizType = 2;
+            questions = dbh.getQuestions(quizType);
+            session.setAttribute("questions", questions);
+            rd.forward(request, response);
         }
         else if ("submitQuiz".equals(request.getParameter("action"))){
             /*int[] q1answers = new int[3];
@@ -128,11 +136,13 @@ public class QuizServlet extends HttpServlet {
                 if(solvedQuestion) { points++; }
                 
             }
+            String usern = (String)application.getAttribute("username");
+            dbh.setPoints(dbh.getUserID(usern), quizType, points);
             
             RequestDispatcher rd = request.getRequestDispatcher("/quizResult.jsp");
             ArrayList<Result> pointsHistory; // if default num shows up something is wrong
-            pointsHistory = dbh.getResults(1, "ada@kth.se");
-            session.setAttribute("pointsHistory", pointsHistory);
+            pointsHistory = dbh.getResults(quizType, usern);
+            session.setAttribute("quiz" + quizType + "History", pointsHistory);
             
             session.setAttribute("points", points);
             rd.forward(request, response);

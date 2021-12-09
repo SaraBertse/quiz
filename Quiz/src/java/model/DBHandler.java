@@ -9,7 +9,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -22,6 +21,7 @@ public class DBHandler {
        private PreparedStatement getQuestions;
        private PreparedStatement getResults;
        private PreparedStatement getUserID;
+       private PreparedStatement setPoints;
        int userCount;
        User[] users;
        ArrayList<Question> questions;
@@ -45,19 +45,16 @@ public class DBHandler {
        
     public User[] findUsers() {
         try {
-          //  connToDB();
             getUserCount = connection.prepareStatement("SELECT COUNT(*) FROM users");
             ResultSet countResult = getUserCount.executeQuery();
             countResult.next();
             userCount = countResult.getInt("COUNT(*)");
             findUser = connection.prepareStatement("SELECT * FROM users");
-            //        + " WHERE username = ?");
-            //findUser.setString(1, username);
+            
             int i = 0;
-           // users = new User[userCount];
             users = new User[2];
             ResultSet result = findUser.executeQuery();
-            while (result.next()) {
+            while (result.next()) { // skips null first line
                 User u = new User();
                 u.setUsername(result.getString("username"));
                 u.setPassword(result.getString("password"));
@@ -65,7 +62,6 @@ public class DBHandler {
                 i++;
             }
 
-            //  password="notnull";
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,20 +69,20 @@ public class DBHandler {
     }
     
     public ArrayList<Result> getResults(int quizType, String username) {
-        // change list to ArrayList???
         results = new ArrayList<>();
         try {
-            getUserID = connection.prepareStatement("SELECT id FROM users \n" +
+            /*getUserID = connection.prepareStatement("SELECT id FROM users \n" +
                 "WHERE username = ?");
             getUserID.setString(1, username);
             ResultSet userIDResult = getUserID.executeQuery();
-            userIDResult.next();
+            userIDResult.next();*/
+            int userID = getUserID(username);
             
             getResults = connection.prepareStatement("SELECT * FROM results\n" +
                 "WHERE results.quiz_id = ? AND user_id = ?\n" +
                 "ORDER BY score DESC");
             getResults.setInt(1, quizType);
-            getResults.setInt(2, userIDResult.getInt("id"));
+            getResults.setInt(2, userID);
             ResultSet resultResult = getResults.executeQuery();
 
             while (resultResult.next()) {
@@ -104,8 +100,26 @@ public class DBHandler {
         return results;
     }
     
-    public List<Question> getQuestions(int quizType) {
-        //    connToDB();
+    public int getUserID(String username){
+        int uID = -1;
+        
+        try{
+            getUserID = connection.prepareStatement("SELECT id FROM users \n" +
+                "WHERE username = ?");
+            getUserID.setString(1, username);
+            ResultSet userIDResult = getUserID.executeQuery();
+            userIDResult.next();
+            uID = userIDResult.getInt("id");
+            
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return uID;
+    }
+    
+    public ArrayList<Question> getQuestions(int quizType) {
         questions = new ArrayList<>();
         try {
             getQuestions = connection.prepareStatement("SELECT * FROM questions "
@@ -133,6 +147,26 @@ public class DBHandler {
         }
 
         return questions;
+    }
+    
+    public void setPoints(int userID, int quizID, int score){
+        try{
+            setPoints = connection.prepareStatement("INSERT INTO results"
+            + " (user_id, quiz_id, score) VALUES (?, ?, ?)");
+            setPoints.setInt(1, userID);
+            setPoints.setInt(2, quizID);
+            setPoints.setInt(3, score);
+            
+            int updatedRows = setPoints.executeUpdate();
+            if (updatedRows != 1) {
+                //handleException(failureMsg, null);
+                System.out.println("update rows failed");
+            }
+
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
     
 
