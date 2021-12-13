@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>Users</title>
+    </head>
+    <body>
+        <h1>Users (thymeleaf)</h1>
+        <table><tr><th>Username</th><th>Password</th></tr>
+<tbody>
+    <tr th:each="user: ${users}">
+        <td th:text="${user.username}" />
+        <td th:text="${user.password}" />
+    </tr>
+</tbody>
+
+        </table>
+
+    </body>
+</html>
