@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>TODO supply a title</title>
+    </head>
+    <body>
+        <h1>Main menu</h1>
+        <div>
+            <form method="post" action="/L3ST/QuizServlet">
+                <input type="hidden" name="action" value="SelectQuiz1"/>
+                <input type="submit" value="SelectQuiz1"/>
+                <!-- add date: result -->
+            </form>
+            <form method="post" action="/L3ST/QuizServlet">
+                <input type="hidden" name="action" value="SelectQuiz2"/>
+                <input type="submit" value="SelectQuiz2"/>
+            </form>
+        </div>
+        
+        <br/>
+        <div>
+            <h3>Results for Quiz 1:</h3>
+            <table>
+            <tr th:each="quiz1 : ${quiz1History}">
+        <td th:text="${quiz1.getScore()}"></td>
+            </tr></table>
+
+     
+            
+        </div>
+        <br/>
+        <div>
+            <h3>Results for Quiz 2:</h3>
+                      <table>
+            <tr th:each="quiz2 : ${quiz2History}">
+        <td th:text="${quiz2.getScore()}"></td>
+            </tr></table>
+        </div>
+    </body>
+</html>

@@ -30,7 +30,7 @@ public class DbHandler {
          
        public static void connToDB(){
           try{
-           connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/quiz","admin", "admin");
+           connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/quiz","root", "admin");
            System.out.println("connection successful");
           }
           catch(Exception e){

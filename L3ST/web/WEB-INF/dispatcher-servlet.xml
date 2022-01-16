@@ -32,6 +32,11 @@
       <property name = "suffix" value = ".jsp" />
     </bean>
     
+    
+    <bean class="examples.QuizServlet" >    
+    </bean>
     <bean class="examples.UserServlet" >    
+    </bean>
+    <bean class="examples.SubmitQuizServlet" >    
     </bean>
 </beans>
