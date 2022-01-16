@@ -4,10 +4,13 @@
  */
 package examples;
 
+import static examples.UserServlet.userName;
 import java.util.ArrayList;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import model.DbHandler;
 import model.Question;
+import model.Result;
 import model.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -28,7 +31,7 @@ public class SubmitQuizServlet {
     @RequestMapping(value = "/SubmitQuizServlet", method = RequestMethod.POST)
     public String submit(@RequestParam("action") String action, 
             ModelMap model, @RequestParam(name = "q", required=false) String[] checkboxValue,
-            @ModelAttribute("user") User user, HttpServletRequest request
+            HttpServletRequest request
             //, @RequestParam("quiz") Quiz quiz
     ){
         
@@ -98,7 +101,20 @@ public class SubmitQuizServlet {
                 if(solvedQuestion) { points++; }
             }
             
-            dbh.setPoints(dbh.getUserID(user1.getUsername()), quizType, points);
+       //    User user2 = (User) model.get("user");
+           String name = UserServlet.userName;
+           
+         //  Map<String,Object> modelMap = mav.getModel().asMap();
+//modelMap.get("companyInfo");
+           dbh.setPoints(dbh.getUserID(name), quizType, points);
+           
+           
+                                   ArrayList<Result> quiz1History; // if default num shows up something is wrong
+                        ArrayList<Result> quiz2History;
+                        quiz1History = dbh.getResults(1, userName);
+                        quiz2History = dbh.getResults(2, userName);
+                        model.addAttribute("quiz1History", quiz1History);
+                        model.addAttribute("quiz2History", quiz2History);
             
             model.addAttribute("points", points);
             return "quizResult.html";

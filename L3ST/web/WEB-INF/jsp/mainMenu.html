@@ -26,11 +26,21 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
         <br/>
         <div>
             <h3>Results for Quiz 1:</h3>
+            <table>
+            <tr th:each="quiz1 : ${quiz1History}">
+        <td th:text="${quiz1.getScore()}"></td>
+            </tr></table>
+
+     
             
         </div>
         <br/>
         <div>
             <h3>Results for Quiz 2:</h3>
+                      <table>
+            <tr th:each="quiz2 : ${quiz2History}">
+        <td th:text="${quiz2.getScore()}"></td>
+            </tr></table>
         </div>
     </body>
 </html>

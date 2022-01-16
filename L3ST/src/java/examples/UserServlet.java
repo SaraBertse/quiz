@@ -1,5 +1,6 @@
 package examples;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 //import javax.servlet.RequestDispatcher;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @SessionAttributes("users")
 @Controller
 public class UserServlet {
+    static String userName;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String start(){ //method name is not mapped
@@ -26,7 +28,7 @@ public class UserServlet {
     }
    
     @RequestMapping(value = "/auth", method = RequestMethod.GET) // GET
-    public String submit(@RequestParam("action") String action, @RequestParam("username") String username, @RequestParam("password") String gottenPassword, ModelMap model) {
+    public String submit(@RequestParam("action") String action, @RequestParam("username") String username, @RequestParam("password") String gottenPassword, ModelMap model, HttpServletRequest request) {
         String password = "notworking";
         System.out.println("kolla login");
         DbHandler dbh = new DbHandler();
@@ -42,6 +44,14 @@ public class UserServlet {
                     password = gottenPassword;
                     if (temp.getPassword().equals(password)){
                         model.addAttribute("user", temp);
+                        userName = temp.getUsername();
+                        
+                        ArrayList<Result> quiz1History; // if default num shows up something is wrong
+                        ArrayList<Result> quiz2History;
+                        quiz1History = dbh.getResults(1, userName);
+                        quiz2History = dbh.getResults(2, userName);
+                        model.addAttribute("quiz1History", quiz1History);
+                        model.addAttribute("quiz2History", quiz2History);
                         return "mainMenu.html";
                             
 //rd = request.getRequestDispatcher("/mainMenu.jsp");
@@ -57,6 +67,8 @@ public class UserServlet {
             //RequestDispatcher rd = request.getRequestDispatcher("/indexcopy.html"); //Ska gå in på quizzen ist
             //rd.forward(request, response);
             return "index";//.html";
+            
+      
     }
     
     @ModelAttribute("username")

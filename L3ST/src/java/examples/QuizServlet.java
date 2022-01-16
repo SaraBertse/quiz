@@ -4,6 +4,7 @@
  */
 package examples;
 
+import static examples.UserServlet.userName;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import model.Result;
@@ -44,6 +45,7 @@ public class QuizServlet {
             model.addAttribute("questions", questions);
             //session.setAttribute("questions", questions);
             //rd.forward(request, response);
+         //   String name = UserServlet.userName;
             return "quiz1.html";
         } 
         else if ("SelectQuiz2".equals(action)) {
@@ -116,13 +118,31 @@ public class QuizServlet {
             
             session.setAttribute("points", points);
             rd.forward(request, response);
+        
 */
             
         
         // activates when pressing "Back" in quizResult
         else if ("toMain".equals(action)) {
+            
+
+                                   ArrayList<Result> quiz1History; // if default num shows up something is wrong
+                        ArrayList<Result> quiz2History;
+                        quiz1History = dbh.getResults(1, userName);
+                        quiz2History = dbh.getResults(2, userName);
+                        model.addAttribute("quiz1History", quiz1History);
+                        model.addAttribute("quiz2History", quiz2History);            
+            
             return "mainMenu.html";
         }
+        
+        String name = UserServlet.userName;
+        
+        //            ArrayList<Result> pointsHistory; // if default num shows up something is wrong
+        //    pointsHistory = dbh.getResults(quizType, name);
+        //    model.addAttribute("quiz" + quizType + "History", pointsHistory);
+        
+        
         
         
         return "mainMenu.html";
