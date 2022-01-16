@@ -2,7 +2,7 @@
 <Context path="/L3ST">
 <Resource name="jdbc/quiz" auth="Container" type="javax.sql.DataSource"
 maxActive="50" maxIdle="30" maxWait="10000"
-username="admin" password="admin"
+username="root" password="admin"
 driverClassName="com.mysql.cj.jdbc.Driver"
-url="jdbc:mysql://localhost:3306/quiz?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
+url="jdbc:mysql://localhost:3306/quiz"/>
 </Context>

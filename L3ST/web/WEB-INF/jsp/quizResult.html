@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <title>Quiz result</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <h1>You got <span th:text="${points}"></span> right out of 3!</h1>
+        <form method="post" action="/L3ST/QuizServlet">
+            <input type="hidden" name="action" value="toMain"/>
+            <input type="submit" value="ToMain"/>
+        </form>
+    </body>
+</html>

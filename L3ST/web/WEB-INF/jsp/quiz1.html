@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>Quiz 1</title>
+    </head>
+    <body>
+        <h1>This is Quiz 1</h1>
+        
+        <form action="/L3ST/SubmitQuizServlet" method="POST" >
+        <div>
+            <h3 th:text="${questions.get(0).getText()}"></h3>
+            <input type="checkbox" id="q1b1" value="ch1" name="q" />
+            <label for="q1b1" th:text="${questions.get(0).getOptions()[0]}"></label><br/>
+            <input type="checkbox" id="q1b2" value="ch2" name="q" />
+            <label for="q1b2" th:text="${questions.get(0).getOptions()[1]}"></label><br/>
+            <input type="checkbox" id="q1b3" value="ch3" name="q" />
+            <label for="q1b3" th:text="${questions.get(0).getOptions()[2]}"></label><br/>
+        </div>
+        <p/>
+        <div>
+            <h3 th:text="${questions.get(1).getText()}"></h3>
+            <input type="checkbox" id="q2b1" value="ch4" name="q" />
+            <label for="q2b1" th:text="${questions.get(1).getOptions()[0]}"></label><br/>
+            <input type="checkbox" id="q2b2" value="ch5" name="q" />
+            <label for="q2b2" th:text="${questions.get(1).getOptions()[1]}"></label><br/>
+            <input type="checkbox" id="q2b3" value="ch6" name="q" />
+            <label for="q2b3" th:text="${questions.get(1).getOptions()[2]}"></label><br/>
+        </div>
+        <p/>
+        <div>
+            <h3 th:text="${questions.get(2).getText()}"></h3>
+            <input type="checkbox" id="q3b1" value="ch7" name="q" />
+            <label for="q3b1" th:text="${questions.get(2).getOptions()[0]}"></label><br/>
+            <input type="checkbox" id="q3b2" value="ch8" name="q" />
+            <label for="q3b2" th:text="${questions.get(2).getOptions()[1]}"></label><br/>
+            <input type="checkbox" id="q3b3" value="ch9" name="q" />
+            <label for="q3b3" th:text="${questions.get(2).getOptions()[2]}"></label><br/>
+        </div>
+
+        <input type="hidden" name="action" value="submitQuiz1"/>
+        <input type="submit" value="Submit"/>
+        </form>
+    </body>
+</html>
